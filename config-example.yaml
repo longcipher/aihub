@@ -1,0 +1,135 @@
+# Hub LLM Gateway Configuration
+# Supports liter-llm provider format with model prefix routing
+
+general:
+  trace_content_enabled: true
+
+providers:
+  # OpenAI provider
+  - key: openai
+    type: openai
+    api_key: ${OPENAI_API_KEY}
+    # base_url: https://api.openai.com/v1  # Optional custom endpoint
+
+  # Anthropic provider
+  - key: anthropic
+    type: anthropic
+    api_key: ${ANTHROPIC_API_KEY}
+
+  # Azure OpenAI provider
+  - key: azure-openai
+    type: azure
+    api_key: ${AZURE_API_KEY}
+    base_url: https://${AZURE_RESOURCE_NAME}.openai.azure.com
+
+  # AWS Bedrock provider
+  - key: bedrock
+    type: bedrock
+    api_key: ""  # Not used for Bedrock
+    region: us-east-1
+
+  # Vertex AI provider
+  - key: vertexai
+    type: vertexai
+    api_key: ""  # Uses service account auth
+    project_id: ${GCP_PROJECT_ID}
+    location: us-central1
+
+  # Custom OpenAI-compatible provider
+  - key: custom-llm
+    type: openai
+    api_key: ${CUSTOM_API_KEY}
+    base_url: https://custom-llm.example.com/v1
+
+models:
+  # OpenAI models
+  - key: gpt-4o
+    type: gpt-4o
+    provider: openai
+  - key: gpt-4o-mini
+    type: gpt-4o-mini
+    provider: openai
+
+  # Anthropic models
+  - key: claude-sonnet
+    type: claude-sonnet-4-20250514
+    provider: anthropic
+  - key: claude-haiku
+    type: claude-haiku-4-5-20251001
+    provider: anthropic
+
+  # Azure models
+  - key: gpt-4-azure
+    type: gpt-4
+    provider: azure-openai
+
+  # Bedrock models
+  - key: bedrock-claude
+    type: anthropic.claude-sonnet-4-20250514-v1:0
+    provider: bedrock
+
+  # Vertex AI models
+  - key: gemini-pro
+    type: gemini-2.5-pro
+    provider: vertexai
+
+  # Custom model
+  - key: custom-model
+    type: custom-model-v1
+    provider: custom-llm
+
+pipelines:
+  - name: default
+    type: chat
+    plugins:
+      - logging:
+          level: info
+      - model-router:
+          models:
+            - gpt-4o
+            - gpt-4o-mini
+            - claude-sonnet
+            - claude-haiku
+
+  - name: completions
+    type: completion
+    plugins:
+      - model-router:
+          models:
+            - gpt-4o
+            - claude-haiku
+
+  - name: embeddings
+    type: embeddings
+    plugins:
+      - model-router:
+          models:
+            - gpt-4o
+
+virtual_keys:
+  - key: hub-team-a
+    name: "Team A"
+    allowed_models: [gpt-4o, gpt-4o-mini]
+    rpm_limit: 60
+    tpm_limit: 100000
+    monthly_budget_cents: 5000
+    budget_mode: hard
+    provider_key: openai
+
+  - key: hub-team-b
+    name: "Team B"
+    allowed_models: []
+    rpm_limit: 120
+    tpm_limit: 200000
+    monthly_budget_cents: 10000
+    budget_mode: soft
+    provider_key: anthropic
+
+  - key: hub-unlimited
+    name: "VIP"
+    allowed_models: []
+    rpm_limit: null
+    tpm_limit: null
+    monthly_budget_cents: null
+    budget_mode: hard
+    provider_key: openai

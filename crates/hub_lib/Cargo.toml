@@ -1,0 +1,24 @@
+[package]
+name = "hub_lib"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+hub-core.workspace = true
+hub-gateway.workspace = true
+hub-management.workspace = true
+
+[dev-dependencies]
+axum.workspace = true
+axum-test.workspace = true
+chrono.workspace = true
+hpx.workspace = true
+serde_json.workspace = true
+sqlx.workspace = true
+tempfile.workspace = true
+testcontainers.workspace = true
+testcontainers-modules = { workspace = true, features = ["postgres"] }
+tokio.workspace = true
+tracing.workspace = true
+anyhow = "1"

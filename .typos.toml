@@ -1,0 +1,5 @@
+[files]
+extend-exclude = ["specs/**", "tests/cassettes/**"]
+
+[default.extend-words]
+Ege = "Ege"

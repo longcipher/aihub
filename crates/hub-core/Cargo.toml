@@ -1,0 +1,22 @@
+[package]
+name = "hub-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+arc-swap.workspace = true
+chrono = { workspace = true, features = ["serde"] }
+futures.workspace = true
+liter-llm = { workspace = true, features = ["native-http", "tracing"] }
+scc.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+serde_yaml.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+utoipa = { workspace = true, features = ["axum_extras", "chrono", "uuid", "openapi_extensions"] }
+uuid = { workspace = true, features = ["v4", "serde"] }
+
+[dev-dependencies]
+proptest.workspace = true
