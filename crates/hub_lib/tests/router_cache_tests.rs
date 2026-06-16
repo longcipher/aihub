@@ -1,8 +1,11 @@
-use hub_lib::state::AppState;
-use hub_lib::types::{
-    GatewayConfig, ModelConfig, Pipeline, PipelineType, PluginConfig, Provider, ProviderType,
-};
 use std::sync::Arc;
+
+use hub_lib::{
+    state::AppState,
+    types::{
+        GatewayConfig, ModelConfig, Pipeline, PipelineType, PluginConfig, Provider, ProviderType,
+    },
+};
 
 #[tokio::test]
 async fn test_router_always_available() {
@@ -23,9 +26,7 @@ async fn test_router_always_available() {
         pipelines: vec![Pipeline {
             name: "default".to_string(),
             r#type: PipelineType::Chat,
-            plugins: vec![PluginConfig::ModelRouter {
-                models: vec!["gpt-4".to_string()],
-            }],
+            plugins: vec![PluginConfig::ModelRouter { models: vec!["gpt-4".to_string()] }],
         }],
         virtual_keys: vec![],
     };
@@ -55,9 +56,7 @@ async fn test_configuration_change_detection() {
         pipelines: vec![Pipeline {
             name: "default".to_string(),
             r#type: PipelineType::Chat,
-            plugins: vec![PluginConfig::ModelRouter {
-                models: vec!["gpt-4".to_string()],
-            }],
+            plugins: vec![PluginConfig::ModelRouter { models: vec!["gpt-4".to_string()] }],
         }],
         virtual_keys: vec![],
     };
@@ -145,9 +144,7 @@ async fn test_concurrent_router_access() {
         pipelines: vec![Pipeline {
             name: "default".to_string(),
             r#type: PipelineType::Chat,
-            plugins: vec![PluginConfig::ModelRouter {
-                models: vec!["gpt-4".to_string()],
-            }],
+            plugins: vec![PluginConfig::ModelRouter { models: vec!["gpt-4".to_string()] }],
         }],
         virtual_keys: vec![],
     };
@@ -210,9 +207,7 @@ async fn test_pipeline_with_failing_tracing_endpoint() {
                     endpoint: "http://invalid-endpoint:4317/v1/traces".to_string(),
                     api_key: "test-key".to_string(),
                 },
-                PluginConfig::ModelRouter {
-                    models: vec!["gpt-4".to_string()],
-                },
+                PluginConfig::ModelRouter { models: vec!["gpt-4".to_string()] },
             ],
         }],
         virtual_keys: vec![],
@@ -222,11 +217,7 @@ async fn test_pipeline_with_failing_tracing_endpoint() {
     let app_state = AppState::new(config).expect("Failed to create app state");
     let elapsed = start_time.elapsed();
 
-    assert!(
-        elapsed.as_millis() < 1000,
-        "Router building took too long: {:?}",
-        elapsed
-    );
+    assert!(elapsed.as_millis() < 1000, "Router building took too long: {:?}", elapsed);
 
     let _router = app_state.get_current_router();
 
@@ -260,17 +251,13 @@ async fn test_tracing_isolation_between_pipelines() {
                         endpoint: "http://invalid-endpoint.example.com/traces".to_string(),
                         api_key: "test-key".to_string(),
                     },
-                    PluginConfig::ModelRouter {
-                        models: vec!["gpt-4".to_string()],
-                    },
+                    PluginConfig::ModelRouter { models: vec!["gpt-4".to_string()] },
                 ],
             },
             Pipeline {
                 name: "simple-pipeline".to_string(),
                 r#type: PipelineType::Chat,
-                plugins: vec![PluginConfig::ModelRouter {
-                    models: vec!["gpt-4".to_string()],
-                }],
+                plugins: vec![PluginConfig::ModelRouter { models: vec!["gpt-4".to_string()] }],
             },
         ],
         virtual_keys: vec![],

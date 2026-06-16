@@ -35,7 +35,7 @@ fn expand_env_vars(content: &str) -> Result<String, HubError> {
                         // Read default value after :-
                         if chars.next() == Some('-') {
                             let mut def = String::new();
-                            while let Some(d) = chars.next() {
+                            for d in chars.by_ref() {
                                 if d == '}' {
                                     found_close = true;
                                     break;

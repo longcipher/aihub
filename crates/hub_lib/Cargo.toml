@@ -10,6 +10,7 @@ hub-gateway.workspace = true
 hub-management.workspace = true
 
 [dev-dependencies]
+anyhow = "1"
 axum.workspace = true
 axum-test.workspace = true
 chrono.workspace = true
@@ -21,4 +22,3 @@ testcontainers.workspace = true
 testcontainers-modules = { workspace = true, features = ["postgres"] }
 tokio.workspace = true
 tracing.workspace = true
-anyhow = "1"

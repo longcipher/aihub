@@ -1,8 +1,11 @@
-use hub_lib::types::{
-    GatewayConfig, ModelConfig, Pipeline, PipelineType, PluginConfig, Provider, ProviderType,
-};
-use hub_lib::{config, state::AppState};
 use std::sync::Arc;
+
+use hub_lib::{
+    state::AppState,
+    types::{
+        GatewayConfig, ModelConfig, Pipeline, PipelineType, PluginConfig, Provider, ProviderType,
+    },
+};
 
 #[tokio::test]
 async fn test_router_integration_flow() {
@@ -37,9 +40,7 @@ async fn test_router_integration_flow() {
         pipelines: vec![Pipeline {
             name: "default".to_string(),
             r#type: PipelineType::Chat,
-            plugins: vec![PluginConfig::ModelRouter {
-                models: vec!["gpt-4".to_string()],
-            }],
+            plugins: vec![PluginConfig::ModelRouter { models: vec!["gpt-4".to_string()] }],
         }],
         virtual_keys: vec![],
     };
@@ -78,9 +79,7 @@ async fn test_router_integration_flow() {
         pipelines: vec![Pipeline {
             name: "default".to_string(),
             r#type: PipelineType::Chat,
-            plugins: vec![PluginConfig::ModelRouter {
-                models: vec!["gpt-4".to_string()],
-            }],
+            plugins: vec![PluginConfig::ModelRouter { models: vec!["gpt-4".to_string()] }],
         }],
         virtual_keys: vec![],
     };
@@ -115,9 +114,7 @@ async fn test_router_integration_flow() {
             Pipeline {
                 name: "default".to_string(),
                 r#type: PipelineType::Chat,
-                plugins: vec![PluginConfig::ModelRouter {
-                    models: vec!["gpt-4".to_string()],
-                }],
+                plugins: vec![PluginConfig::ModelRouter { models: vec!["gpt-4".to_string()] }],
             },
             Pipeline {
                 name: "fast".to_string(),
@@ -131,21 +128,14 @@ async fn test_router_integration_flow() {
     };
 
     let multi_update_result = app_state.update_config(multi_pipeline_config);
-    assert!(
-        multi_update_result.is_ok(),
-        "Multi-pipeline configuration update should succeed"
-    );
+    assert!(multi_update_result.is_ok(), "Multi-pipeline configuration update should succeed");
 
     let multi_snapshot = app_state.config_snapshot();
     assert_eq!(multi_snapshot.config.pipelines.len(), 2);
     assert_eq!(multi_snapshot.config.models.len(), 2);
 
-    let pipeline_names: Vec<&String> = multi_snapshot
-        .config
-        .pipelines
-        .iter()
-        .map(|p| &p.name)
-        .collect();
+    let pipeline_names: Vec<&String> =
+        multi_snapshot.config.pipelines.iter().map(|p| &p.name).collect();
     assert!(pipeline_names.contains(&&"default".to_string()));
     assert!(pipeline_names.contains(&&"fast".to_string()));
 }
@@ -169,9 +159,7 @@ async fn test_concurrent_configuration_updates() {
         pipelines: vec![Pipeline {
             name: "default".to_string(),
             r#type: PipelineType::Chat,
-            plugins: vec![PluginConfig::ModelRouter {
-                models: vec!["gpt-4".to_string()],
-            }],
+            plugins: vec![PluginConfig::ModelRouter { models: vec!["gpt-4".to_string()] }],
         }],
         virtual_keys: vec![],
     };

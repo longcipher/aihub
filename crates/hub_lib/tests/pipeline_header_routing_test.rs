@@ -1,8 +1,11 @@
-use hub_lib::state::AppState;
-use hub_lib::types::{
-    GatewayConfig, ModelConfig, Pipeline, PipelineType, PluginConfig, Provider, ProviderType,
-};
 use std::sync::Arc;
+
+use hub_lib::{
+    state::AppState,
+    types::{
+        GatewayConfig, ModelConfig, Pipeline, PipelineType, PluginConfig, Provider, ProviderType,
+    },
+};
 
 fn create_test_config_with_multiple_pipelines() -> GatewayConfig {
     let provider = Provider {
@@ -22,17 +25,13 @@ fn create_test_config_with_multiple_pipelines() -> GatewayConfig {
     let pipeline1 = Pipeline {
         name: "default".to_string(),
         r#type: PipelineType::Chat,
-        plugins: vec![PluginConfig::ModelRouter {
-            models: vec!["test-model".to_string()],
-        }],
+        plugins: vec![PluginConfig::ModelRouter { models: vec!["test-model".to_string()] }],
     };
 
     let pipeline2 = Pipeline {
         name: "special".to_string(),
         r#type: PipelineType::Chat,
-        plugins: vec![PluginConfig::ModelRouter {
-            models: vec!["test-model".to_string()],
-        }],
+        plugins: vec![PluginConfig::ModelRouter { models: vec!["test-model".to_string()] }],
     };
 
     GatewayConfig {
@@ -69,9 +68,7 @@ async fn test_pipeline_header_routing_configuration_updates() {
     let pipeline3 = Pipeline {
         name: "third".to_string(),
         r#type: PipelineType::Chat,
-        plugins: vec![PluginConfig::ModelRouter {
-            models: vec!["test-model".to_string()],
-        }],
+        plugins: vec![PluginConfig::ModelRouter { models: vec!["test-model".to_string()] }],
     };
     updated_config.pipelines.push(pipeline3);
 

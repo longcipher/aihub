@@ -1,10 +1,13 @@
-use hub_lib::openapi::get_openapi_spec;
-use hub_lib::routes::create_router;
-use hub_lib::state::AppState;
-use hub_lib::types::{
-    GatewayConfig, ModelConfig, Pipeline, PipelineType, PluginConfig, Provider, ProviderType,
-};
 use std::sync::Arc;
+
+use hub_lib::{
+    openapi::get_openapi_spec,
+    routes::create_router,
+    state::AppState,
+    types::{
+        GatewayConfig, ModelConfig, Pipeline, PipelineType, PluginConfig, Provider, ProviderType,
+    },
+};
 
 #[test]
 fn test_openapi_spec_is_valid() {
@@ -25,11 +28,7 @@ fn test_unified_openapi_contains_all_routes() {
     let core_routes = ["/health", "/v1/models"];
 
     for route in core_routes {
-        assert!(
-            spec.paths.paths.contains_key(route),
-            "Missing core route: {}",
-            route
-        );
+        assert!(spec.paths.paths.contains_key(route), "Missing core route: {}", route);
     }
 }
 
@@ -74,9 +73,7 @@ async fn test_router_creation_no_conflicts() {
         pipelines: vec![Pipeline {
             name: "default".to_string(),
             r#type: PipelineType::Chat,
-            plugins: vec![PluginConfig::ModelRouter {
-                models: vec!["gpt-4".to_string()],
-            }],
+            plugins: vec![PluginConfig::ModelRouter { models: vec!["gpt-4".to_string()] }],
         }],
         virtual_keys: vec![],
     };
@@ -85,8 +82,5 @@ async fn test_router_creation_no_conflicts() {
 
     let _router = create_router(app_state);
 
-    assert!(
-        true,
-        "Router created successfully with unified OpenAPI routes"
-    );
+    assert!(true, "Router created successfully with unified OpenAPI routes");
 }

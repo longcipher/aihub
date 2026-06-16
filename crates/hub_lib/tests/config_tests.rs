@@ -1,7 +1,6 @@
+use std::{env, io::Write, path::Path};
+
 use hub_lib::config;
-use std::env;
-use std::io::Write;
-use std::path::Path;
 use tempfile::NamedTempFile;
 
 #[test]
@@ -13,10 +12,7 @@ fn test_config_with_environment_variables() {
         env::set_var("TEST_AZURE_API_KEY", "azure-test-key-789");
         env::set_var("TEST_RESOURCE_NAME", "test-resource");
         env::set_var("TEST_REGION", "us-west-2");
-        env::set_var(
-            "TEST_TRACING_ENDPOINT",
-            "https://otel.example.com/v1/traces",
-        );
+        env::set_var("TEST_TRACING_ENDPOINT", "https://otel.example.com/v1/traces");
         env::set_var("TEST_TRACING_API_KEY", "tracing-key-123");
     }
 
@@ -68,9 +64,7 @@ pipelines:
 
     // Write to temporary file
     let mut temp_file = NamedTempFile::new().expect("Failed to create temp file");
-    temp_file
-        .write_all(config_content.as_bytes())
-        .expect("Failed to write to temp file");
+    temp_file.write_all(config_content.as_bytes()).expect("Failed to write to temp file");
     let temp_path = temp_file.path().to_str().unwrap();
 
     // Load the config
@@ -94,10 +88,7 @@ pipelines:
         .iter()
         .find(|p| p.key == "anthropic")
         .expect("Anthropic provider not found");
-    assert_eq!(
-        anthropic_provider.api_key,
-        "sk-ant-test-key-456".to_string()
-    );
+    assert_eq!(anthropic_provider.api_key, "sk-ant-test-key-456".to_string());
 
     let azure_provider = gateway_config
         .providers
@@ -105,20 +96,14 @@ pipelines:
         .find(|p| p.key == "azure-openai")
         .expect("Azure provider not found");
     assert_eq!(azure_provider.api_key, "azure-test-key-789".to_string());
-    assert_eq!(
-        azure_provider.params.get("resource_name"),
-        Some(&"test-resource".to_string())
-    );
+    assert_eq!(azure_provider.params.get("resource_name"), Some(&"test-resource".to_string()));
 
     let bedrock_provider = gateway_config
         .providers
         .iter()
         .find(|p| p.key == "bedrock")
         .expect("Bedrock provider not found");
-    assert_eq!(
-        bedrock_provider.params.get("region"),
-        Some(&"us-west-2".to_string())
-    );
+    assert_eq!(bedrock_provider.params.get("region"), Some(&"us-west-2".to_string()));
 
     // Verify models are parsed correctly
     assert_eq!(gateway_config.models.len(), 3);
@@ -169,9 +154,7 @@ pipelines:
 
     // Write to temporary file
     let mut temp_file = NamedTempFile::new().expect("Failed to create temp file");
-    temp_file
-        .write_all(config_content.as_bytes())
-        .expect("Failed to write to temp file");
+    temp_file.write_all(config_content.as_bytes()).expect("Failed to write to temp file");
     let temp_path = temp_file.path().to_str().unwrap();
 
     // Load the config - should fail
@@ -206,9 +189,7 @@ pipelines:
 
     // Write to temporary file
     let mut temp_file = NamedTempFile::new().expect("Failed to create temp file");
-    temp_file
-        .write_all(config_content.as_bytes())
-        .expect("Failed to write to temp file");
+    temp_file.write_all(config_content.as_bytes()).expect("Failed to write to temp file");
     let temp_path = temp_file.path().to_str().unwrap();
 
     // Load the config - should succeed

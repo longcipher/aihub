@@ -1,6 +1,9 @@
-use hub_lib::config::hash::{calculate_config_hash, configs_are_equal};
-use hub_lib::types::{GatewayConfig, Provider, ProviderType};
 use std::collections::HashMap;
+
+use hub_lib::{
+    config::hash::{calculate_config_hash, configs_are_equal},
+    types::{GatewayConfig, Provider, ProviderType},
+};
 
 #[test]
 fn test_identical_configs_have_same_hash() {
@@ -20,10 +23,7 @@ fn test_identical_configs_have_same_hash() {
     let config2 = config1.clone();
 
     assert!(configs_are_equal(&config1, &config2));
-    assert_eq!(
-        calculate_config_hash(&config1),
-        calculate_config_hash(&config2)
-    );
+    assert_eq!(calculate_config_hash(&config1), calculate_config_hash(&config2));
 }
 
 #[test]
@@ -55,10 +55,7 @@ fn test_different_configs_have_different_hashes() {
     };
 
     assert!(!configs_are_equal(&config1, &config2));
-    assert_ne!(
-        calculate_config_hash(&config1),
-        calculate_config_hash(&config2)
-    );
+    assert_ne!(calculate_config_hash(&config1), calculate_config_hash(&config2));
 }
 
 #[test]
