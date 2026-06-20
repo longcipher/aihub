@@ -1,14 +1,14 @@
 use std::sync::Arc;
 
-use axum::{
-    Json, Router,
-    http::StatusCode,
-    routing::{get, post},
-};
+use axum::{Json, Router, http::StatusCode, routing::get};
 use axum_prometheus::PrometheusMetricLayerBuilder;
 use hub_core::state::AppState;
 
-/// Create the main gateway router
+use crate::middleware::{
+    budget_enforcer::budget_middleware, byok_handler::byok_handler_middleware,
+    rate_limiter::rate_limit_middleware, virtual_key_auth::virtual_key_auth,
+};
+
 pub fn create_router(state: Arc<AppState>) -> Router {
     let (prometheus_layer, metric_handle) = PrometheusMetricLayerBuilder::new()
         .with_ignore_patterns(&["/metrics", "/health"])
@@ -16,11 +16,24 @@ pub fn create_router(state: Arc<AppState>) -> Router {
         .with_default_metrics()
         .build_pair();
 
+    // Build pipeline routes from config
+    let config = state.current_config();
+    let pipeline_router =
+        crate::pipeline::handler::create_pipeline_router(&config.pipelines, state.clone());
+
+    // Compose middleware stack: auth → rate limit → budget → BYOK
+    let protected_routes = pipeline_router
+        .layer(axum::middleware::from_fn_with_state(state.clone(), virtual_key_auth))
+        .layer(axum::middleware::from_fn_with_state(state.clone(), rate_limit_middleware))
+        .layer(axum::middleware::from_fn_with_state(state.clone(), budget_middleware))
+        .layer(axum::middleware::from_fn_with_state(state.clone(), byok_handler_middleware));
+
     Router::new()
         .route("/health", get(health))
         .route("/metrics", get(|| async move { metric_handle.render() }))
         .route("/api-docs/openapi.json", get(|| async { Json(crate::openapi::get_openapi_spec()) }))
         .route("/v1/models", get(models))
+        .merge(protected_routes)
         .layer(prometheus_layer)
         .with_state(state)
 }
@@ -66,18 +79,4 @@ pub async fn models(
         "object": "list",
         "data": models,
     })))
-}
-
-/// No config fallback router
-pub fn create_no_config_router() -> Router {
-    Router::new()
-        .route("/chat/completions", post(no_config_handler))
-        .route("/completions", post(no_config_handler))
-        .route("/embeddings", post(no_config_handler))
-        .fallback(no_config_handler)
-}
-
-async fn no_config_handler() -> Result<Json<serde_json::Value>, StatusCode> {
-    tracing::warn!("No configuration available - returning 404 Not Found");
-    Err(StatusCode::NOT_FOUND)
 }

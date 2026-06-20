@@ -1,5 +1,3 @@
-pub mod hash;
-
 use std::path::Path;
 
 use crate::{error::HubError, types::GatewayConfig};
@@ -84,37 +82,6 @@ pub fn calculate_config_hash(config: &GatewayConfig) -> u64 {
     let mut hasher = DefaultHasher::new();
     config.hash(&mut hasher);
     hasher.finish()
-}
-
-pub mod validation {
-    use crate::types::GatewayConfig;
-
-    pub fn validate_gateway_config(config: &GatewayConfig) -> Result<Vec<String>, Vec<String>> {
-        let mut errors = Vec::new();
-
-        if config.providers.is_empty() {
-            errors.push("At least one provider is required".into());
-        }
-        if config.models.is_empty() {
-            errors.push("At least one model is required".into());
-        }
-        if config.pipelines.is_empty() {
-            errors.push("At least one pipeline is required".into());
-        }
-
-        let provider_keys: std::collections::HashSet<_> =
-            config.providers.iter().map(|p| &p.key).collect();
-        for model in &config.models {
-            if !provider_keys.contains(&model.provider) {
-                errors.push(format!(
-                    "Model '{}' references non-existent provider '{}'",
-                    model.key, model.provider
-                ));
-            }
-        }
-
-        if errors.is_empty() { Ok(errors) } else { Err(errors) }
-    }
 }
 
 /// Compare two configurations for equality (ignoring order-dependent fields)

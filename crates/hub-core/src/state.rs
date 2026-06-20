@@ -3,13 +3,19 @@ use std::sync::Arc;
 use arc_swap::ArcSwap;
 
 use crate::{
+    budget::BudgetEnforcer,
     error::HubError,
+    models::registry::ModelRegistry,
+    rate_limit::RateLimiter,
     types::{GatewayConfig, virtual_key::VirtualKey},
 };
 
 /// Application state with lock-free reads via arc-swap
 pub struct AppState {
     inner: ArcSwap<InnerAppState>,
+    pub model_registry: Arc<ModelRegistry>,
+    pub rate_limiter: Arc<RateLimiter>,
+    pub budget_enforcer: Arc<BudgetEnforcer>,
 }
 
 struct InnerAppState {
@@ -20,7 +26,13 @@ struct InnerAppState {
 impl AppState {
     pub fn new(config: GatewayConfig) -> Result<Self, HubError> {
         let virtual_keys = config.virtual_keys.clone();
-        Ok(Self { inner: ArcSwap::from_pointee(InnerAppState { config, virtual_keys }) })
+        let model_registry = Arc::new(ModelRegistry::new(&config.models, &config.providers)?);
+        Ok(Self {
+            inner: ArcSwap::from_pointee(InnerAppState { config, virtual_keys }),
+            model_registry,
+            rate_limiter: Arc::new(RateLimiter::new()),
+            budget_enforcer: Arc::new(BudgetEnforcer::new()),
+        })
     }
 
     /// Get current configuration (lock-free read)

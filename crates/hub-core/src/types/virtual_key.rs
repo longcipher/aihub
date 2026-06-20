@@ -1,4 +1,4 @@
-use chrono::{DateTime, Datelike, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
@@ -69,35 +69,6 @@ impl VirtualKey {
 
         // Otherwise, model must be in allowed_models
         self.allowed_models.iter().any(|m| m == model)
-    }
-}
-
-/// Rate limit state for tracking requests
-#[derive(Debug, Clone)]
-pub struct RateLimitState {
-    pub requests_in_window: u32,
-    pub tokens_in_window: u32,
-    pub window_start: DateTime<Utc>,
-}
-
-impl Default for RateLimitState {
-    fn default() -> Self {
-        Self { requests_in_window: 0, tokens_in_window: 0, window_start: Utc::now() }
-    }
-}
-
-/// Budget tracking state
-#[derive(Debug, Clone)]
-pub struct BudgetState {
-    pub spent_cents: i64,
-    pub month: u32,
-    pub year: i32,
-}
-
-impl Default for BudgetState {
-    fn default() -> Self {
-        let now = Utc::now();
-        Self { spent_cents: 0, month: now.month(), year: now.year() }
     }
 }
 

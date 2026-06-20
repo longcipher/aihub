@@ -9,12 +9,6 @@ use crate::{
     services::virtual_key_service::VirtualKeyService,
 };
 
-/// Management API state
-#[derive(Clone)]
-pub struct ManagementState {
-    pub virtual_key_service: Arc<VirtualKeyService>,
-}
-
 /// Create management API router
 pub fn create_management_router(pool: PgPool) -> Router {
     let virtual_key_repo = VirtualKeyRepository::new(pool);

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use hub_core::{
-    config::hash::{calculate_config_hash, configs_are_equal},
+    config::{calculate_config_hash, configs_are_equal},
     types::{GatewayConfig, Provider, ProviderType},
 };
 
