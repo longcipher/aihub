@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use hub_lib::{
+use hub_core::{
     state::AppState,
     types::{
         GatewayConfig, ModelConfig, Pipeline, PipelineType, PluginConfig, Provider, ProviderType,

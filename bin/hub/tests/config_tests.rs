@@ -1,6 +1,6 @@
 use std::{env, io::Write, path::Path};
 
-use hub_lib::config;
+use hub_core::config;
 use tempfile::NamedTempFile;
 
 #[test]

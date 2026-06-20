@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use hub_lib::{
+use hub_core::{
     config::hash::{calculate_config_hash, configs_are_equal},
     types::{GatewayConfig, Provider, ProviderType},
 };

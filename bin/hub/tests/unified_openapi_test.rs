@@ -1,13 +1,12 @@
 use std::sync::Arc;
 
-use hub_lib::{
-    openapi::get_openapi_spec,
-    routes::create_router,
+use hub_core::{
     state::AppState,
     types::{
         GatewayConfig, ModelConfig, Pipeline, PipelineType, PluginConfig, Provider, ProviderType,
     },
 };
+use hub_gateway::{openapi::get_openapi_spec, routes::create_router};
 
 #[test]
 fn test_openapi_spec_is_valid() {

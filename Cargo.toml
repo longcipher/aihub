@@ -5,14 +5,13 @@ members = [
     "crates/hub-core",
     "crates/hub-gateway",
     "crates/hub-management",
-    "crates/hub_lib",
 ]
 resolver = "3"
 [workspace.package]
 version = "0.10.0"
 edition = "2024"
-license = "MIT"
-repository = "Apache-2.0"
+license = "Apache-2.0"
+repository = "https://github.com/longcipher/aihub"
 
 [workspace.dependencies]
 # local crates
@@ -30,15 +29,15 @@ chrono = "0.4.45"
 ecdysis = "1.1.1"
 eyre = "0.6.12"
 futures = "0.3.32"
-hpx = "2.4.17"
-liter-llm = "1.5.1"
+hpx = "2.4.18"
+liter-llm = "1.7.4"
 opentelemetry = "0.32.0"
 opentelemetry-otlp = "0.32.0"
 opentelemetry-semantic-conventions = "0.32.0"
 opentelemetry_sdk = "0.32.1"
 parking_lot = "0.12.5"
 proptest = "1.11.0"
-scc = "3.7.3"
+scc = "3.8.3"
 serde = "1.0.228"
 serde_json = "1.0.150"
 serde_yaml = "0.9.33"
